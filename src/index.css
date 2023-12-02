@@ -1,3 +1,24 @@
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
+
+@layer components{
+    .button-unpressed{
+        @apply pl-[20px] pr-[20px] pt-[10px] pb-[10px] bg-gray-400 text-gray-600 border-[2px] border-solid font-bold;
+    }
+    .button-pressed{
+        @apply pl-[20px] pr-[20px] pt-[10px] pb-[10px] bg-white text-primary border-[2px] border-solid font-bold;
+    }
+    .text-box{
+        @apply border border-border rounded-md p-2 w-[90%] focus:outline-none focus:border-yellow-400;
+    }
+    .button-add{
+        @apply w-[17%] h-auto border border-border text-white bg-primary text-2xl font-black p-3
+    }
+    .history-attribute{
+        @apply flex flex-row justify-between text-primary text-sm font-black border-r border-black p-2 w-auto mr-2;
+    }
+    .page-number-current{
+        @apply pt-1 pb-1 pl-3 pr-3 mt-1 mb-1 ml-3 bg-primary rounded-lg text-sm text-white cursor-pointer;
+    }
+}

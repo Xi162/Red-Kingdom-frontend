@@ -6,7 +6,8 @@ export default {
     extend: {
       colors: {
         primary: "#D21E1E",
-        secondary: "",
+        secondary: "#ECB300",
+        border: "#FA9E93"
       },
       fontFamily: {
         sans: ['"Roboto Slab"', ...defaultTheme.fontFamily.sans],
