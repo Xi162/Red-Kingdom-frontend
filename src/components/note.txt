@@ -1,0 +1,2 @@
+This is the place for components. Feel free to create your own components and 
+include them into the pages.
