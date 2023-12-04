@@ -7,7 +7,14 @@ import Cart from './components/user/pages/Cart'
 
 function App() {
     return (
-        <Cart/>
+        <>
+            {/* add /management or /history in search bar to get to pages with ShopMain enable */}
+            {/* <ShopMain/> */}
+
+            {/* <Orders/> */}
+            {/* <OrderDetails/> */}
+            <Cart/>
+        </>
     )
 }
 

@@ -21,4 +21,13 @@
     .page-number-current{
         @apply pt-1 pb-1 pl-3 pr-3 mt-1 mb-1 ml-3 bg-primary rounded-lg text-sm text-white cursor-pointer;
     }
+    .page-number{
+        @apply pt-1 pb-1 pl-3 pr-3 mt-1 mb-1 ml-3 rounded-lg text-sm text-gray-700 cursor-pointer hover:bg-gray-300;
+    }
+    .left-right-arrow{
+        @apply mt-1 mb-1 ml-3 rounded-lg font-bold w-5 text-gray-700 cursor-pointer hover:text-primary;
+    }
+    .breadcrumb{
+        @apply underline mr-2 ml-2 font-bold text-[18px]
+    }
 }
