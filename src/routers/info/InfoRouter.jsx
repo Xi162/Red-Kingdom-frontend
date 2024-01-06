@@ -1,4 +1,4 @@
-import { Route, Routes, NavLink } from "react-router-dom";
+import { Route, Routes } from "react-router-dom";
 
 import Article from "../../pages/main/info/Article";
 import HomePage from "../../pages/main/info/HomePage";
@@ -15,6 +15,9 @@ export default function InfoRouter({}) {
         <Route path="home" element={<HomePage />} />
         <Route path="latest" element={<HomePage />} />
         <Route path="login" element={<Login />} />
+
+        {/* Need work: pass id as prop into Article component */}
+        <Route path="article/*" element={<Article />} />
       </Routes>
     </>
   );
