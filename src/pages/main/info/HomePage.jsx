@@ -10,6 +10,7 @@ export default function HomePage() {
   const [articles, setArticles] = useState([]);
   const [relateds, setRelated] = useState([]);
 
+  // Fetch data
   useEffect(() => {
     Promise.all([
       fetch("/src/mock_data/news.json").then((response) => response.json()),
@@ -31,6 +32,7 @@ export default function HomePage() {
             image={`src/assets/images/${item.img}`}
             title={item.title}
             description={item.description}
+            id={item.id}
           />
         );
       }
@@ -40,6 +42,7 @@ export default function HomePage() {
           image={`src/assets/images/${item.img}`}
           title={item.title}
           description={item.description}
+          id={item.id}
         />
       );
     } else if (item.type == "video") {
@@ -50,6 +53,7 @@ export default function HomePage() {
           key={item.id}
           image={`src/assets/images/${item.img}`}
           title={item.title}
+          id={item.id}
         />
       );
     }

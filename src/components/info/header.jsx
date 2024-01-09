@@ -50,7 +50,7 @@ const navLink = [
 
 export default function Navbar({
   username = "Fred",
-  userImage = "src/assets/images/user-image.png",
+  userImage = "/src/assets/images/user-image.png",
 }) {
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
 
@@ -74,7 +74,7 @@ export default function Navbar({
             <span className="sr-only">Your Company</span>
             <img
               className="h-12 w-auto"
-              src="src/assets/images/club_logo.png"
+              src="/src/assets/images/club_logo.png"
               alt="arsenal united logo"
             />
           </NavLink>
