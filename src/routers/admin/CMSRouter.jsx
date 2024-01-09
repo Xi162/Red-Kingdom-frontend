@@ -6,16 +6,16 @@ export default function CMSRouter() {
   return (
     <div className="flex flex-row gap-4">
       <div className="w-full max-w-[18rem]">
-        <aside className="sidebar h-full sidebar-fixed-left justify-start mt-[60px]">
+        <aside className="sidebar h-full justify-start">
           <div className="flex flex-col"></div>
           <section className="sidebar-content h-fit min-h-[20rem] overflow-visible">
             <nav className="menu rounded-md">
               <section className="menu-section">
-                <ul className="menu-items">
+                <ul className="menu-items ">
                   <li className="menu-item p-0 h-8">
                     <NavLink
                       to="content_management"
-                      className="flex gap-2 w-full h-full items-center px-2"
+                      className="flex gap-2 w-full h-full items-center px-2 text-lg"
                     >
                       <svg
                         xmlns="http://www.w3.org/2000/svg"
@@ -43,7 +43,7 @@ export default function CMSRouter() {
                   <li className="menu-item p-0 h-8 ">
                     <NavLink
                       to="create_post"
-                      className="flex gap-2 w-full h-full items-center px-2"
+                      className="flex gap-2 w-full h-full items-center px-2 text-lg"
                     >
                       <svg
                         xmlns="http://www.w3.org/2000/svg"
@@ -69,6 +69,7 @@ export default function CMSRouter() {
         </aside>
       </div>
       <Routes>
+        <Route path="/" element={<ContentManagement />} />
         <Route path="content_management" element={<ContentManagement />} />
         <Route path="create_post" element={<CreatePost />} />
       </Routes>

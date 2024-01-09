@@ -1,43 +1,66 @@
 import React from "react";
-import FileUpload from "/src/components/CMS/FileUpLoad";
+// import FileUpload from "/src/components/CMS/FileUpLoad";
 import DeleteIcon from "@mui/icons-material/Delete";
 
 import { useState } from "react";
 const CreatePost = () => {
-  const [subtitle, setSubtitle] = useState("");
-  const [text, setText] = useState("");
-  // Assuming FileUpload has a state for handling uploaded files
-  const [uploadedFile, setUploadedFile] = useState(null);
+  const [inputs, setInputs] = useState([
+    {
+      label: "Title",
+      value: "",
+    },
+    {
+      label: "Subtitle",
+      value: "",
+    },
+    {
+      label: "Text",
+      value: "",
+    },
+    {
+      label: "Image",
+      // value: null, // LEGACY CODE
+      value: "",
+    },
+  ]);
 
-  const handleSubtitleChange = (value) => {
-    setSubtitle(value);
-  };
-
-  const handleTextChange = (value) => {
-    setText(value);
-  };
-
-  const handleFileUpload = (file) => {
-    // Assuming FileUpload component sets the file state
-    setUploadedFile(file);
+  const handleInputChange = (index, newValue) => {
+    setInputs((prevInputs) =>
+      prevInputs.map((input, i) =>
+        i === index ? { ...input, value: newValue } : input
+      )
+    );
   };
 
   const handleSubmit = () => {
-    // You can now use subtitle, text, and uploadedFile for your submission logic
-    console.log("Subtitle:", subtitle);
-    console.log("Text:", text);
-    console.log("Uploaded File:", uploadedFile);
-
-    // Reset the form or perform any other actions after submission
-    setSubtitle("");
-    setText("");
-    setUploadedFile(null);
+    // Retrieve all the input values from state
+    inputs.forEach((input) => {
+      console.log(`${input.label}:`, input.value);
+    });
+    // Perform further actions like sending data to a backend, etc.
   };
+
+  const addNewBlock = (labelName) => {
+    const newInput = {
+      label: labelName,
+      value: labelName === "Image" ? null : "", // Initial value for different input types
+    };
+
+    setInputs([...inputs, newInput]);
+    toggleButton();
+  };
+
+  function removeBlock(index) {
+    setInputs((prevInputs) => prevInputs.filter((_, i) => i !== index));
+  }
+
   return (
     <div className="flex flex-col w-full items-center">
       <div className="w-3/4">
         <div className="flex justify-between items-center px-[20px] pt-[10px]">
-          <h4 className="text-red-600 font-bold text-xl">Content</h4>
+          <h4 className="text-red-600 font-bold text-xl font-title tracking-wider">
+            Content
+          </h4>
           <button
             onClick={handleSubmit}
             className="bg-white text-red-600 font-black text-2xl border-[2px] border-gray-950 px-4  rounded"
@@ -45,60 +68,145 @@ const CreatePost = () => {
             Publish
           </button>
         </div>
-        <div>
+        <div id="mainContent">
           {/* Form.. */}
-          <FormInput label={"Subtitle"} onInputChange={handleSubtitleChange}>
-            <textarea className="text-box" cols="50" rows="3"></textarea>
-          </FormInput>
-          <FormInput label={"Text"} onInputChange={handleTextChange}>
-            <textarea
-              className="text-box"
-              name=""
-              id=""
-              cols="50"
-              rows="5"
-            ></textarea>
-            {/* <input type='textarea'></input> */}
-          </FormInput>
-          <FormInput label={"Image"} onInputChange={handleFileUpload}>
-            <FileUpload />
-          </FormInput>
-          <button>Add block</button>
+
+          {inputs.map((input, index) => {
+            if (
+              input.label == "Title" ||
+              input.label == "Subtitle" ||
+              input.label == "Image"
+            ) {
+              let isTitle = false;
+              let formClassName = "text-box font-bold";
+              if (input.label == "Title") {
+                formClassName += " text-xl";
+                isTitle = true;
+              }
+              return (
+                <FormInput
+                  key={input.label + index}
+                  label={input.label}
+                  // onInputChange={() => input.handler}
+                  deleteFlag={!isTitle}
+                  onDeleteClick={() => removeBlock(index)}
+                >
+                  <input
+                    name={`form-${index}`}
+                    value={input.value}
+                    onChange={(e) => handleInputChange(index, e.target.value)}
+                    type="text"
+                    className={formClassName}
+                    maxLength={50}
+                  ></input>
+                </FormInput>
+              );
+            } else if (input.label == "Text") {
+              return (
+                <FormInput
+                  key={input.label + index}
+                  label={input.label}
+                  // onInputChange={() => input.handler}
+                  onDeleteClick={() => removeBlock(index)}
+                >
+                  <textarea
+                    name={`form${index}`}
+                    value={input.value}
+                    onChange={(e) => handleInputChange(index, e.target.value)}
+                    className="text-box"
+                    cols="50"
+                    rows="4"
+                  ></textarea>
+                </FormInput>
+              );
+              // LEGACY IMAGE COMPONENT
+              // } else if (input.label == "Image") {
+              //   return (
+              //     <FormInput
+              //       key={input.label + index}
+              //       label={input.label}
+              //       // onInputChange={() => input.handler}
+              //       onDeleteClick={() => removeBlock(index)}
+              //     >
+              //       <FileUpload
+              //         onFileSelect={(file) => handleInputChange(index, file)}
+              //       />
+              //     </FormInput>
+              //   );
+            }
+          })}
+        </div>
+        <div className="mb-4 flex items-center">
+          <div>
+            <button
+              className="mx-2 p-2 bg-primary font-bold text-white"
+              onClick={toggleButton}
+            >
+              Add block
+            </button>
+          </div>
+          <div className="flex px-4 space-x-6 hidden" id="blockInfo">
+            <button
+              className="bg-primary/30 p-2 font-bold"
+              onClick={() => addNewBlock("Subtitle")}
+            >
+              Subtitle Block
+            </button>
+            <button
+              className="bg-primary/50 p-2 font-bold"
+              onClick={() => addNewBlock("Text")}
+            >
+              Text Block
+            </button>
+            <button
+              className="bg-primary/40 p-2 font-bold"
+              onClick={() => addNewBlock("Image")}
+            >
+              Image Block
+            </button>
+          </div>
         </div>
       </div>
     </div>
   );
 };
 
-const FormInput = ({ label, onInputChange, children }) => {
-  const [inputValue, setInputValue] = useState("");
+function toggleButton() {
+  const blockInfo = document.getElementById("blockInfo");
+  blockInfo.classList.toggle("hidden");
+}
 
-  const handleInputChange = (event) => {
-    setInputValue(event.target.value);
-    // Call the onInputChange prop if provided
-    if (onInputChange) {
-      onInputChange(event.target.value);
+const FormInput = ({
+  label,
+  onInputChange,
+  children,
+  deleteFlag = true,
+  onDeleteClick,
+}) => {
+  const handleDeleteClick = () => {
+    if (onDeleteClick) {
+      onDeleteClick();
     }
   };
 
   return (
-    <div className="flex flex-col bg-stone-200 p-[10px] m-[10px]">
+    <div className="flex flex-col bg-stone-200 p-2 m-2">
       {/* Input header */}
       <div className="flex flex-row justify-between">
         <div>
-          <h6 className="text-red-600 font-bold text-xl">{label}</h6>
+          <h6 className="text-red-600 font-bold text-xl font-title tracking-wider pb-2">
+            {label}
+          </h6>
         </div>
-        <button>
-          <DeleteIcon />
-        </button>
+        {deleteFlag && ( // Conditionally render delete button based on deleteFlag
+          <button onClick={handleDeleteClick}>
+            <DeleteIcon />
+          </button>
+        )}
       </div>
+
       {/* Body with children */}
-      <div className="p-[4px]">
-        {React.cloneElement(children, {
-          onChange: handleInputChange,
-          value: inputValue,
-        })}
-      </div>
+      <div className="p-[4px]">{React.cloneElement(children, {})}</div>
     </div>
   );
 };

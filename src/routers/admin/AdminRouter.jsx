@@ -7,22 +7,25 @@ import CMSRouter from "./CMSRouter";
 const AdminRouter = () => {
   return (
     <>
-      <div className="navbar navbar-sticky bg-primary font-bold">
+      <div className="navbar navbar-sticky bg-primary text-white tracking-wider font-bold shadow-md">
         <div className="navbar-start">
-          <NavLink className="navbar-item text-inherit" to="/">
+          <NavLink className="navbar-item text-inherit text-2xl" to="/">
             Shop
           </NavLink>
         </div>
         <div className="navbar-center">
-          <NavLink className="navbar-item text-inherit" to="/admin/CMS">
+          <NavLink className="navbar-item text-inherit text-xl" to="/admin/CMS">
             CMS
           </NavLink>
-          <NavLink className="navbar-item text-inherit" to="/admin/shop">
+          <NavLink
+            className="navbar-item text-inherit text-xl"
+            to="/admin/shop"
+          >
             Shop
           </NavLink>
         </div>
       </div>
-      <div className="mt-[60px]">
+      <div className="mt-20">
         <Routes>
           <Route path="shop/*" element={<ShopAdminRouter />} />
           <Route path="CMS/*" element={<CMSRouter />} />
