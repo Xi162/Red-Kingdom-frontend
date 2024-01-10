@@ -18,9 +18,6 @@ const FileUpload = () => {
       {selectedFile && (
         <div>
           <p>Selected File: {selectedFile.name}</p>
-          {/* You can display a preview of the image here if needed */}
-          {/* For example, you can use URL.createObjectURL(selectedFile) */}
-          {/* and assign it to the src attribute of an <img> element */}
         </div>
       )}
     </div>
