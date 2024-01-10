@@ -2,29 +2,43 @@
 import CartTable from "/src/components/shop/user/CartTable";
 // import { Link } from 'react-router-dom'
 import Breadcrumb from "/src/components/shop/user/Breadcrumb";
+import { useState, useEffect, useContext } from "react";
+import { LoginContext } from "../../../state/Provider";
+import { useNavigate } from "react-router-dom";
+import axios from "axios";
 
 function Cart() {
-  const tableHeaders = ["Product", "Description", "Quantity", "Price"];
-  const tableRows = [
-    [
-      "23/24 Home Shirt njdkcna cjasn jcnkas",
-      "Size: S\nLong-sleave",
-      1,
-      "$140.99",
-    ],
-    [
-      "23/24 Home Shirt njdkcna cjasn jcnkas",
-      "Size: S\nLong-sleave",
-      1,
-      "$140.99",
-    ],
-    [
-      "23/24 Home Shirt njdkcna cjasn jcnkas",
-      "Size: S\nLong-sleave",
-      1,
-      "$140.99",
-    ],
-  ];
+  const [loginState, setLoginState] = useContext(LoginContext);
+  const [tableRows, setTableRows] = useState([]);
+  const navigate = useNavigate();
+  useEffect(() => {
+    axios
+      .get(`http://localhost:5500/cart/${loginState.userID}`, {
+        headers: {
+          Authorization: "Bearer " + loginState.token,
+        },
+      })
+      .then((res) => {
+        console.log(res.data);
+        setTableRows(res.data);
+        // totalPrice = tableRows.reduce((accumulator, item) => {
+        //   return accumulator + item.price * item.quantity;
+        // }, 0);
+      })
+      .catch((err) => {
+        if (err.response.status === 401) {
+          setLoginState({
+            userID: null,
+            username: null,
+            token: null,
+            lastLogin: Date.now(),
+          });
+          navigate("/login");
+        }
+      });
+  }, []);
+
+  const tableHeaders = ["Product", "Quantity", "Size", "Price"];
   // ['Previously previous page', 'Previous page', ..., 'Current page']
   const historyNav = ["Main", "Kit", "Details", "Cart"];
 
@@ -35,15 +49,13 @@ function Cart() {
         {" "}
         {/* table-wrapper */}
         <CartTable headers={tableHeaders} rows={tableRows}></CartTable>
-        <div className="mt-10 text-[25px] font-black">
-          <span>TOTAL</span>
-        </div>
-        <div className="flex justify-between mt-5 font-black">
-          <div className="text-[20px]">Number of products: 3</div>
-          <div className="text-[25px]">$123.45</div>
-        </div>
         <div className="flex items-end justify-end mt-5 mb-10">
-          <button className="w-[20%] border border-border text-white bg-primary text-[25px] font-black p-3 rounded-lg hover:bg-red-700">
+          <button
+            className="w-[20%] border border-border text-white bg-primary text-[25px] font-black p-3 rounded-lg hover:bg-red-700"
+            onClick={() => {
+              navigate("/shop/shipment");
+            }}
+          >
             CHECK OUT
           </button>
         </div>

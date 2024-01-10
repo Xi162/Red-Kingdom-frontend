@@ -33,7 +33,7 @@ function KitSlider({ title }) {
         <div className="h-[12px] w-1/4 bg-primary"></div>
       </div>
       <div className="h-2/3 overflow-auto">
-        <div className="h-full flex justify-between items-start px-4 mt-[50px]">
+        <div className="h-full flex justify-start gap-28 px-4 mt-[50px]">
           {itemList.slice(0, 3).map((item) => (
             <Link
               key={item.id}

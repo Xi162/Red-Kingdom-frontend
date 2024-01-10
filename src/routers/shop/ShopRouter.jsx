@@ -11,11 +11,60 @@ import Orders from "../../pages/main/shop/Orders";
 import OrderDetails from "../../pages/main/shop/OrderDetails";
 import Cart from "../../pages/main/shop/Cart";
 import ShipmentOption from "../../pages/main/shop/ShipmentOption";
+import NotFoundPage from "../NotFoundPage";
+
+import Navbar from "../../components/info/header";
+
+const navLink = [
+  {
+    id: 1,
+    name: "Officials",
+    title: "Official kít from Arsenal United",
+    link: "officials",
+  },
+  {
+    id: 2,
+    name: "Training",
+    //   description: "Training kít from Arsenal United",
+    link: "training",
+  },
+  {
+    id: 3,
+    name: "Hats",
+    //   description: "Upcoming matches from Arsenal United",
+    link: "hats",
+  },
+  {
+    id: 4,
+    name: "Bags",
+    //   description: "Tickets to Arsenal United's matches",
+    link: "bags",
+  },
+  {
+    id: 5,
+    name: "Souvenirs",
+    //   description: "Info about the Arsenal United's squad",
+    link: "souvenirs",
+  },
+  {
+    id: 6,
+    name: "Cart",
+    //   description: "History of Arsenal United",
+    link: "cart",
+  },
+  {
+    id: 7,
+    name: "Orders",
+    //   description: "History of Arsenal United",
+    link: "orders",
+  },
+];
 
 const ShopRouter = () => {
+  let username = "John Doe";
   return (
     <>
-      <div className="navbar navbar-sticky bg-primary font-bold z-50">
+      {/* <div className="navbar navbar-sticky bg-primary font-bold z-50">
         <div className="navbar-start">
           <NavLink className="navbar-item text-inherit" to="">
             Shop
@@ -52,9 +101,11 @@ const ShopRouter = () => {
             Register
           </NavLink>
         </div>
-      </div>
+      </div> */}
 
-      <div className="mt-[60px] z-0">
+      <Navbar navlinks={navLink} />
+
+      <div className="z-0">
         <Routes>
           <Route exact path="/" element={<ShopMain />} />
           <Route exact path="login" element={<Login />} />
@@ -97,6 +148,7 @@ const ShopRouter = () => {
               </ProtectedPage>
             }
           />
+          <Route path="*" element={<NotFoundPage />} />
         </Routes>
       </div>
     </>

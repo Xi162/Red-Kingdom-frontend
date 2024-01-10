@@ -1,121 +1,33 @@
 // import React from "react";
 import Table from "/src/components/shop/admin/Table";
+import { useState, useEffect, useContext } from "react";
+import { LoginContext } from "/src/state/Provider";
+import axios from "axios";
 
 function ShopHistory() {
   const tableHeaders = [
     "ID",
-    "Customer Name",
-    "Product Name",
-    "Category",
-    "Quantity",
-    "Price",
-    "Order Status",
+    "Receiver Name",
+    "Address",
+    "Total Price",
+    "Status",
     "Received Date",
-    "Time",
-    "Completed Time",
-    "Time",
-    "Action",
+    "Completed Date",
   ];
-  const tableRows = [
-    [
-      1,
-      "Kevin De Bruyne",
-      "Long ass T-Shirts",
-      "Shirt",
-      1,
-      "$5",
-      "Pending",
-      "Dec-28-2023",
-      "1:00AM",
-      "Dec-28-2023",
-      "5:30PM",
-      "temp",
-    ],
-    [
-      2,
-      "John Doe",
-      "Very Long T-Shirts",
-      "Shirt",
-      1,
-      "$5",
-      "Pending",
-      "Dec-28-2023",
-      "1:00AM",
-      "Dec-28-2023",
-      "5:30PM",
-      "temp",
-    ],
-    [
-      3,
-      "John Doe",
-      "Hat for Young Children to Wear",
-      "Hat",
-      1,
-      "$5",
-      "Pending",
-      "Dec-28-2023",
-      "1:00AM",
-      "Dec-28-2023",
-      "5:30PM",
-      "temp",
-    ],
-    [
-      4,
-      "John Doe",
-      "Long T-Shirts",
-      "Shirt",
-      1,
-      "$5",
-      "Pending",
-      "Dec-28-2023",
-      "1:00AM",
-      "Dec-28-2023",
-      "5:30PM",
-      "temp",
-    ],
-    [
-      5,
-      "John Doe",
-      "Long T-Shirts",
-      "Shirt",
-      1,
-      "$5",
-      "Pending",
-      "Dec-28-2023",
-      "1:00AM",
-      "Dec-28-2023",
-      "5:30PM",
-      "temp",
-    ],
-    [
-      6,
-      "John Doe",
-      "Long T-Shirts",
-      "Shirt",
-      1,
-      "$5",
-      "Pending",
-      "Dec-28-2023",
-      "1:00AM",
-      "Dec-28-2023",
-      "5:30PM",
-      "temp",
-    ],
-    [
-      7,
-      "John Doe",
-      "Long T-Shirts",
-      "Shirt",
-      1,
-      "$5",
-      "Pending",
-      "Dec-28-2023",
-      "1:00AM",
-      "Dec-28-2023",
-      "5:30PM",
-      "temp",
-    ],
-  ];
+  const [loginState, setLoginState] = useContext(LoginContext);
+  const [tableRows, setTableRows] = useState([]);
+  useEffect(() => {
+    axios
+      .get(`http://localhost:5500/orders`, {
+        headers: {
+          Authorization: "Bearer " + loginState.token,
+        },
+      })
+      .then((res) => {
+        console.log(res.data);
+        setTableRows(res.data);
+      });
+  }, []);
 
   return (
     <div className="flex-[5] ml-2 mr-7 flex-col">

@@ -1,6 +1,7 @@
 import { Routes, Route, NavLink } from "react-router-dom";
 import ShopHistory from "../../pages/admin/shop/ShopHistory";
 import ShopManagement from "../../pages/admin/shop/ShopManagement";
+import OrderDetailAdmin from "../../pages/admin/shop/OrderDetailAdmin";
 export default function ShopAdminRouter() {
   return (
     <div className="flex flex-row gap-4">
@@ -64,6 +65,7 @@ export default function ShopAdminRouter() {
       <Routes>
         <Route path="history" element={<ShopHistory />} />
         <Route path="management/*" element={<ShopManagement />} />
+        <Route path="orders/:orderID" element={<OrderDetailAdmin />} />
       </Routes>
     </div>
   );

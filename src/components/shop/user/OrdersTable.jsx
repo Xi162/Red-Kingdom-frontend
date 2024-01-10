@@ -1,5 +1,6 @@
 // import React from 'react'
 // import { Link } from 'react-router-dom'
+import OrderRow from "./OrderRow";
 
 function OrdersTable({ headers, rows }) {
   return (
@@ -21,34 +22,7 @@ function OrdersTable({ headers, rows }) {
         </thead>
         <tbody>
           {rows.map((row, rowIndex) => (
-            <tr
-              key={rowIndex}
-              className="bg-white shadow-xl cursor-pointer hover:bg-gray-100"
-            >
-              {row.map((cell, cellIndex) => (
-                <td
-                  key={cellIndex}
-                  className={`pl-[20px] pr-[20px] pt-[30px] pb-[30px] text-[18px] border-b-2 border-b-gray-300 border-t-8 border-t-white ${
-                    cellIndex === 2 || cellIndex === 3
-                      ? "text-center font-black"
-                      : ""
-                  }`}
-                >
-                  {cell === "Pending" && (
-                    <span className="text-orange-500">{cell}</span>
-                  )}
-                  {cell === "Fail" && (
-                    <span className="text-red-500">{cell}</span>
-                  )}
-                  {cell === "Complete" && (
-                    <span className="text-green-500">{cell}</span>
-                  )}
-                  {cell !== "Pending" &&
-                    cell !== "Fail" &&
-                    cell !== "Complete" && <span>{cell}</span>}
-                </td>
-              ))}
-            </tr>
+            <OrderRow row={row} rowIndex={rowIndex} key={rowIndex} />
           ))}
         </tbody>
       </table>

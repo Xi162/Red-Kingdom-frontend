@@ -2,6 +2,8 @@ import { useState } from "react";
 import { Dialog } from "@headlessui/react";
 import { Bars3Icon, XMarkIcon } from "@heroicons/react/24/outline";
 import { NavLink } from "react-router-dom";
+import { LoginContext } from "../../state/Provider";
+import { useContext } from "react";
 
 const navLink = [
   {
@@ -49,29 +51,33 @@ const navLink = [
 ];
 
 export default function Navbar({
-  username = "Fred",
   userImage = "/src/assets/images/user-image.png",
+  navlinks = navLink,
 }) {
+  const [loginState, setLoginState] = useContext(LoginContext);
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
+  console.log(loginState);
 
   return (
     <header className="bg-white sticky top-0 z-40">
-      <div className="bg-mediumblack text-white font-medium font-title text-xl h-10 flex items-center">
-        <img
-          src={userImage}
-          alt={`${username}'s avatar`}
-          className="w-8 h-8 object-cover m-4 rounded-full shadow-sm shadow-gray-400"
-        />
-        Hi, {username}
-      </div>
+      {loginState.isLoggedIn ? (
+        <div className="bg-mediumblack text-white font-medium font-title text-xl h-10 flex items-center">
+          <img
+            src={userImage}
+            alt={`${loginState.username}'s avatar`}
+            className="w-8 h-8 object-cover m-4 rounded-full shadow-sm shadow-gray-400"
+          />
+          Hi, {loginState.username}
+        </div>
+      ) : null}
       <nav
         className="mx-auto flex items-center justify-between p-4 bg-primary"
         aria-label="Global"
       >
         {/* Page icon */}
         <div className="flex lg:flex-1">
-          <NavLink href="#" className="-m-1.5" to="home">
-            <span className="sr-only">Your Company</span>
+          <NavLink className="-m-1.5" to="/">
+            {/* <span className="sr-only">Your Company</span> */}
             <img
               className="h-12 w-auto"
               src="/src/assets/images/club_logo.png"
@@ -94,10 +100,9 @@ export default function Navbar({
 
         {/* Navbar for large devices */}
         <ul className="hidden lg:flex lg:gap-x-12 list-none pl-0">
-          {navLink.map((item) => (
+          {navlinks.map((item) => (
             <li key={item.id}>
               <NavLink
-                href={item.href}
                 className="text-lg font-semibold leading-6 text-white"
                 to={item.link}
               >
@@ -108,15 +113,28 @@ export default function Navbar({
         </ul>
 
         {/* Login button */}
-        <div className="hidden lg:flex lg:flex-1 lg:justify-end">
-          <NavLink
-            href="#"
-            className="text-lg font-semibold leading-6 text-gray-900"
-            to={"login"}
-          >
-            Log in <span aria-hidden="true">&rarr;</span>
-          </NavLink>
-        </div>
+        {loginState.userID ? (
+          <div className="hidden lg:flex lg:flex-1 lg:justify-end">
+            <NavLink
+              href="#"
+              className="text-lg font-semibold leading-6 text-gray-900"
+              to={"/login"}
+              onClick={() => setLoginState({ isLoggedIn: false })}
+            >
+              Log out <span aria-hidden="true">&rarr;</span>
+            </NavLink>
+          </div>
+        ) : (
+          <div className="hidden lg:flex lg:flex-1 lg:justify-end">
+            <NavLink
+              href="#"
+              className="text-lg font-semibold leading-6 text-gray-900"
+              to={"/login"}
+            >
+              Log in <span aria-hidden="true">&rarr;</span>
+            </NavLink>
+          </div>
+        )}
       </nav>
 
       {/* Navbar for small devices */}
@@ -149,7 +167,7 @@ export default function Navbar({
           <div className="mt-6 flow-root">
             <div className="-my-6 divide-y divide-gray-500/10">
               <ul className="space-y-2 py-6 list-none pl-0">
-                {navLink.map((item) => (
+                {navlinks.map((item) => (
                   <li key={item.id}>
                     <NavLink
                       href={item.href}

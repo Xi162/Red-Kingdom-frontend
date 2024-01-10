@@ -2,10 +2,13 @@ import React from "react";
 import ShirtImg from "/src/assets/images/shirt_placeholder.jpeg";
 import PropTypes from "prop-types";
 import "/src/index.css";
-import { useParams } from "react-router-dom";
+import { useParams, useNavigate } from "react-router-dom";
 import axios from "axios";
+import { LoginContext } from "/src/state/Provider";
 
 export default function ShopItem() {
+  const navigate = useNavigate();
+  const [loginState, setLoginState] = React.useContext(LoginContext);
   const [item, setItem] = React.useState({});
   const { productID } = useParams();
 
@@ -16,18 +19,6 @@ export default function ShopItem() {
     });
   }, [productID]);
   const [chosenSize, setSize] = React.useState(item.size);
-
-  const handleSubmit = (e) => {
-    e.preventDefault();
-    console.log(
-      "Successfully added to cart!\n" +
-        "Size: " +
-        chosenSize +
-        "\n" +
-        "Price: $" +
-        item.price
-    );
-  };
   return (
     <div className="">
       <div className="flex justify-between items-center h-[24vw] max-h-[315px] pl-[10vw] pr-[10vw] mt-[5vw]">
@@ -35,10 +26,7 @@ export default function ShopItem() {
           <img src={ShirtImg} alt="Shirt Image" />
         </div>
 
-        <form
-          className="flex flex-col justify-around shadow-xl h-full w-2/5 p-5"
-          onSubmit={handleSubmit}
-        >
+        <form className="flex flex-col justify-around shadow-xl h-full w-2/5 p-5">
           <div className="text-4xl font-bold">{item.name}</div>
           <div className="text-lg font-bold">CHOOSE YOUR SIZE</div>
           <select
@@ -48,17 +36,44 @@ export default function ShopItem() {
               setSize(e.target.value);
               console.log(e.target.value);
             }}
+            required
           >
-            {/* {item.size.map((itemSize) => (
+            <option value="O" selected>
+              Pick a size
+            </option>
+            {["S", "M", "L", "XL"].map((itemSize) => (
               <option key={itemSize} value={itemSize}>
                 {itemSize}
               </option>
-            ))} */}
+            ))}
           </select>
           <div className="flex flex-col items-center">
             <button
               className="border text-white bg-primary text-lg font-black p-3 rounded-lg hover:bg-red-700 m-2"
               type="submit"
+              onClick={(e) => {
+                e.preventDefault();
+                axios
+                  .post(
+                    `http://localhost:5500/cart/${loginState.userID}`,
+                    {
+                      productID: item.id,
+                      size: chosenSize,
+                    },
+                    {
+                      headers: {
+                        Authorization: `Bearer ${loginState.token}`,
+                      },
+                    }
+                  )
+                  .then((res) => {
+                    console.log(res.data);
+                    navigate("/shop/cart");
+                  })
+                  .catch((err) => {
+                    console.log(err);
+                  });
+              }}
             >
               ADD TO CART ${item.price}
             </button>

@@ -2,11 +2,20 @@ import React from "react";
 import bgImg from "/src/assets/images//background_title.png";
 import PropTypes from "prop-types";
 import axios from "axios";
-import { useParams, Link } from "react-router-dom";
+import { useParams, Link, Navigate } from "react-router-dom";
 // import Breadcrumb from "./Breadcrumb";
 
 export default function ShopCategory() {
   const { category } = useParams();
+  if (
+    !["officials", "training", "hats", "bags", "souvenirs"].includes(category)
+  ) {
+    return (
+      <div className="flex justify-center items-center h-screen">
+        <div className="text-5xl font-bold text-red-600">404 Not Found</div>
+      </div>
+    );
+  }
   const [itemList, setItemList] = React.useState([]);
   React.useEffect(() => {
     axios
