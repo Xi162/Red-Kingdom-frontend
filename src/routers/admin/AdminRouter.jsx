@@ -9,13 +9,8 @@ const AdminRouter = () => {
     <>
       <div className="navbar navbar-sticky bg-primary text-white tracking-wider font-bold shadow-md">
         <div className="navbar-start">
-<<<<<<< HEAD
           <NavLink className="navbar-item text-inherit" to="/">
             Home
-=======
-          <NavLink className="navbar-item text-inherit text-2xl" to="/">
-            Shop
->>>>>>> dd1a0467e351532f73e612a033db0f3480cffe1d
           </NavLink>
         </div>
         <div className="navbar-center">
