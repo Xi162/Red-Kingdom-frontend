@@ -1,7 +1,9 @@
 import TextBlock from "./textBlock";
 import ImageBlock from "./imageBlock";
 import SubtitleBlock from "./subtitleBlock";
-export default function Article({ id }) {
+import { useParams } from "react-router-dom";
+export default function Article() {
+  const { articleID } = useParams();
   return (
     <>
       {/* Fetch article's blocks here (using article ID) */}

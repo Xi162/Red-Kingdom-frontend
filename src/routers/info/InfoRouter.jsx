@@ -19,7 +19,7 @@ export default function InfoRouter({}) {
         <Route path="register" element={<Register />} />
 
         {/* Need work: pass id as prop into Article component */}
-        <Route path="article/*" element={<Article />} />
+        <Route path="article/:articleID" element={<Article />} />
       </Routes>
     </>
   );
