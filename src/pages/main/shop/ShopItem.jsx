@@ -73,6 +73,7 @@ export default function ShopItem() {
                   .catch((err) => {
                     console.log(err);
                   });
+                navigate("/shop/cart");
               }}
             >
               ADD TO CART ${item.price}

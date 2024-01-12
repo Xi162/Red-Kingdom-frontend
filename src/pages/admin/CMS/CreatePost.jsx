@@ -119,20 +119,6 @@ const CreatePost = () => {
                   ></textarea>
                 </FormInput>
               );
-              // LEGACY IMAGE COMPONENT
-              // } else if (input.label == "Image") {
-              //   return (
-              //     <FormInput
-              //       key={input.label + index}
-              //       label={input.label}
-              //       // onInputChange={() => input.handler}
-              //       onDeleteClick={() => removeBlock(index)}
-              //     >
-              //       <FileUpload
-              //         onFileSelect={(file) => handleInputChange(index, file)}
-              //       />
-              //     </FormInput>
-              //   );
             }
           })}
         </div>

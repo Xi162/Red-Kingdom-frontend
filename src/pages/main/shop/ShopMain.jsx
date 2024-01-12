@@ -50,9 +50,10 @@ function KitSlider({ title }) {
             </Link>
           ))}
           {itemList.slice(3, 4).map((item) => (
-            <button
+            <Link
               key={item.id}
               className="w-[192.51px] shadow hover:shadow-xl transform hover:opacity-75 active:mt-[5px] active:shadow"
+              to={`/shop/${title.toLowerCase()}`}
             >
               <img src={"/src/assets/images/item.png"} alt="itemImage"></img>
               <div className="flex flex-col justify-between items-start w-full pl-[10px] pr-[10px] absolute bottom-0 bg-black bg-opacity-20 active:mt-[5px]">
@@ -64,7 +65,7 @@ function KitSlider({ title }) {
               <div className="flex justify-center items-center h-full w-[192.51px] text-[20px] font-bold text-white absolute right-0 top-0 bg-black bg-opacity-40">
                 SEE ALL {">>"}
               </div>
-            </button>
+            </Link>
           ))}
         </div>
       </div>

@@ -1,5 +1,5 @@
 import React from "react";
-import ImgPlaceholder from "../../../assets/images/icon.png";
+import ImgPlaceholder from "../../../assets/images/club_logo.png";
 import { Link, Navigate } from "react-router-dom";
 // import PropTypes from "prop-types";
 import { LoginContext } from "../../../state/Provider";
@@ -15,7 +15,7 @@ export default function Login() {
             <div className="flex items-center justify-center">
               <img
                 src={ImgPlaceholder}
-                className="aspect-square h-[92px] mt-[30px]  border-2 border-gray-600"
+                className="aspect-square h-[92px] mt-[30px]"
                 alt="logo"
               />
             </div>
