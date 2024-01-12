@@ -12,6 +12,7 @@ function ShopUpdate() {
   const [price, setPrice] = useState("");
   const [desc, setDesc] = useState("");
   const [message, setMessage] = useState("");
+
   return (
     <div className="border-[1px] border-solid border-border mt-[10px]">
       <div className="mt-[10px] flex flex-col">

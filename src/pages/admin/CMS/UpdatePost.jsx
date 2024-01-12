@@ -1,29 +1,54 @@
 import React from "react";
 import DeleteIcon from "@mui/icons-material/Delete";
-import { useContext, useState } from "react";
+import { useContext, useState, useEffect } from "react";
+import { useParams } from "react-router-dom";
 import { LoginContext } from "../../../state/Provider";
 import axios from "axios";
 
-const CreatePost = () => {
+const UpdatePost = () => {
+  const { articleID } = useParams();
+
   const [loginState, setLoginState] = useContext(LoginContext);
   const [message, setMessage] = useState("No Message Set");
   const [title, setTitle] = useState("");
   const [image, setImage] = useState("");
 
-  const [inputs, setInputs] = useState([
-    {
-      type: "Subtitle",
-      content: "",
-    },
-    {
-      type: "Text",
-      content: "",
-    },
-    {
-      type: "Image",
-      content: "",
-    },
-  ]);
+  const [inputs, setInputs] = useState([]);
+  const [article, setArticle] = useState([]);
+
+  console.log("fiwef");
+
+  useEffect(() => {
+    axios
+      .get(`http://localhost:5500/articles/${articleID}`)
+      .then((res) => {
+        setInputs(res.data.contents);
+        console.log(res.data.contents);
+        // console.log(res.data.contents);
+        console.log(res.data);
+        // article = res.data;
+        setArticle(() => res.data);
+        setTitle(res.data.title);
+        setImage(res.data.image);
+        // let contentsArray = res.data.contents;
+        // let tmpArr = [];
+        // for (let i = 0; i < contentsArray.length; ++i) {
+        //   setTitle(res.data.title);
+        //   setImage(res.data.image);
+        //   // addNewBlock(contentsArray[i].type, contentsArray[i].content);
+        //   tmpArr.push(contentsArray[i]);
+        //   setInputs(tmpArr);
+
+        //   console.log(contentsArray[i]);
+        // }
+        // console.log(tmpArr);
+        // console.log(inputs);
+        console.log(article);
+      })
+      .catch((err) => {
+        console.log(err);
+      });
+  }, [articleID]);
 
   // UPDATE a block in the array
   const handleInputChange = (index, newValue) => {
@@ -70,10 +95,10 @@ const CreatePost = () => {
   };
 
   // ADD a block to the array
-  function addNewBlock(labelName) {
+  function addNewBlock(labelName, content = "") {
     const newInput = {
       type: labelName,
-      content: "",
+      content: content,
     };
 
     setInputs([...inputs, newInput]);
@@ -102,7 +127,7 @@ const CreatePost = () => {
         <div id="mainContent">
           {/* Form.. */}
 
-          <FormInput label={"Title"} deleteFlag={true}>
+          {/* <FormInput label={"Title"} deleteFlag={false}>
             <input
               name={"form-title"}
               value={title}
@@ -115,7 +140,7 @@ const CreatePost = () => {
             ></input>
           </FormInput>
 
-          <FormInput label={"Cover Image"} deleteFlag={true}>
+          <FormInput label={"Cover Image"} deleteFlag={false}>
             <input
               name={"form-cover-image"}
               value={image}
@@ -126,54 +151,45 @@ const CreatePost = () => {
               className={"text-box font-bold"}
               maxLength={50}
             ></input>
-          </FormInput>
+          </FormInput> */}
 
           {inputs.map((input, index) => {
             if (input.type == "Subtitle" || input.type == "Image") {
               let isTitle = false;
               let formClassName = "text-box font-bold";
-              if (input.type == "Title") {
-                formClassName += " text-xl";
-                isTitle = true;
-              }
               return (
-                <FormInput
+                <FormInputText
                   key={input.type + index}
                   label={input.type}
-                  deleteFlag={!isTitle}
                   onDeleteClick={() => removeBlock(index)}
-                >
-                  <input
-                    name={`form-${index}`}
-                    value={input.content}
-                    onChange={(e) => {
-                      handleInputChange(index, e.target.value);
-                    }}
-                    type="text"
-                    className={formClassName}
-                    maxLength={50}
-                  ></input>
-                </FormInput>
+                  contentInput={input.content}
+                ></FormInputText>
+                // <FormInput
+                //   key={input.type + index}
+                //   label={input.type}
+                //   deleteFlag={!isTitle}
+                //   onDeleteClick={() => removeBlock(index)}
+                // >
+                //   <input
+                //     name={`form-${index}`}
+                //     value={input.content}
+                //     onChange={(e) => {
+                //       handleInputChange(index, e.target.value);
+                //     }}
+                //     type="text"
+                //     className={formClassName}
+                //     maxLength={50}
+                //   ></input>
+                // </FormInput>
               );
             } else if (input.type == "Text") {
               return (
-                <FormInput
+                <FormInputText
                   key={input.type + index}
                   label={input.type}
-                  // onInputChange={() => input.handler}
                   onDeleteClick={() => removeBlock(index)}
-                >
-                  <textarea
-                    name={`form${index}`}
-                    value={input.content}
-                    onChange={(e) => {
-                      handleInputChange(index, e.target.value);
-                    }}
-                    className="text-box"
-                    cols="50"
-                    rows="4"
-                  ></textarea>
-                </FormInput>
+                  contentInput={input.content}
+                ></FormInputText>
               );
             }
           })}
@@ -218,13 +234,9 @@ function toggleButton() {
   blockInfo.classList.toggle("hidden");
 }
 
-const FormInput = ({
-  label,
-  onInputChange,
-  children,
-  deleteFlag = true,
-  onDeleteClick,
-}) => {
+const FormInputTitle = ({ label, deleteFlag = true, onDeleteClick }) => {
+  const [content, setContent] = useState("");
+
   const handleDeleteClick = () => {
     if (onDeleteClick) {
       onDeleteClick();
@@ -253,4 +265,53 @@ const FormInput = ({
   );
 };
 
-export default CreatePost;
+const FormInputText = ({
+  label,
+  deleteFlag = true,
+  onDeleteClick,
+  contentInput = "",
+}) => {
+  const [content, setContent] = useState(contentInput);
+  useEffect(() => {
+    setContent(contentInput);
+  }, [contentInput]);
+
+  const handleDeleteClick = () => {
+    if (onDeleteClick) {
+      onDeleteClick();
+    }
+  };
+
+  return (
+    <div className="flex flex-col bg-stone-200 p-2 m-2">
+      {/* Input header */}
+      <div className="flex flex-row justify-between">
+        <div>
+          <h6 className="text-red-600 font-bold text-xl font-title tracking-wider pb-2">
+            {label}
+          </h6>
+        </div>
+        {deleteFlag && ( // Conditionally render delete button based on deleteFlag
+          <button onClick={handleDeleteClick}>
+            <DeleteIcon />
+          </button>
+        )}
+      </div>
+
+      {/* Body with children */}
+      <div className="p-[4px]">
+        <textarea
+          value={content}
+          onChange={(e) => {
+            setContent(e.target.value);
+          }}
+          className="text-box"
+          cols="50"
+          rows="4"
+        ></textarea>
+      </div>
+    </div>
+  );
+};
+
+export default UpdatePost;
