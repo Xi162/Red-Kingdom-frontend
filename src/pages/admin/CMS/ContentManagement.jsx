@@ -1,202 +1,120 @@
-import { useState, Fragment } from "react";
-import { nanoid } from "nanoid";
+import React, { useState, useEffect } from "react";
+import { useNavigate } from "react-router-dom";
+import axios from "axios";
 import "/src/App.css";
-// import data from "./mock-data.json";
-import ReadOnlyRow from "/src/components/CMS/ReadOnlyRow";
-import EditableRow from "/src/components/CMS/EditableRow";
-const data = [
-  {
-    id: 1,
-    dateCreated: "01/02/2013",
-    creatorName: "Ivan",
-    phoneNumber: "+84123456789",
-  },
-  {
-    id: 2,
-    dateCreated: "28/07/2014",
-    creatorName: "Jesus",
-    phoneNumber: "+84123812789",
-  },
-  {
-    id: 3,
-    dateCreated: "01/02/2023",
-    creatorName: "Nketiah",
-    phoneNumber: "+84912456789",
-  },
-];
+
 const ContentManagement = () => {
-  const [contacts, setContacts] = useState(data);
-  const [addFormData, setAddFormData] = useState({
-    dateCreated: "",
-    creatorName: "",
-    phoneNumber: "",
-  });
+  const navigate = useNavigate();
+  const [itemList, setItemList] = useState([]);
 
-  const [editFormData, setEditFormData] = useState({
-    dateCreated: "",
-    creatorName: "",
-    phoneNumber: "",
-  });
+  useEffect(() => {
+    axios
+      .get(`http://localhost:5500/articles`)
+      .then((res) => {
+        console.log(res);
+        setItemList(res.data);
+      })
+      .catch((err) => {
+        console.log(err);
+      });
+  }, []);
 
-  const [editContactId, setEditContactId] = useState(null);
+  function convertTimestamp(timestamp) {
+    const [datePart, timePart] = timestamp.split("T");
+    const [year, month, day] = datePart.split("-");
+    const [hours, minutes] = timePart.slice(0, -5).split(":"); // Truncate milliseconds and Z
 
-  const handleAddFormChange = (event) => {
-    event.preventDefault();
-
-    const fieldName = event.target.getAttribute("name");
-    const fieldValue = event.target.value;
-
-    const newFormData = { ...addFormData };
-    newFormData[fieldName] = fieldValue;
-
-    setAddFormData(newFormData);
-  };
-
-  const handleEditFormChange = (event) => {
-    event.preventDefault();
-
-    const fieldName = event.target.getAttribute("name");
-    const fieldValue = event.target.value;
-
-    const newFormData = { ...editFormData };
-    newFormData[fieldName] = fieldValue;
-
-    setEditFormData(newFormData);
-  };
-
-  const handleAddFormSubmit = (event) => {
-    event.preventDefault();
-
-    const newContact = {
-      id: nanoid(),
-      dateCreated: addFormData.dateCreated,
-      creatorName: addFormData.creatorName,
-      phoneNumber: addFormData.phoneNumber,
-    };
-
-    const newContacts = [...contacts, newContact];
-    setContacts(newContacts);
-  };
-
-  const handleEditFormSubmit = (event) => {
-    event.preventDefault();
-
-    const editedContact = {
-      id: editContactId,
-      dateCreated: editFormData.dateCreated,
-      creatorName: editFormData.creatorName,
-      phoneNumber: editFormData.phoneNumber,
-    };
-
-    const newContacts = [...contacts];
-
-    const index = contacts.findIndex((contact) => contact.id === editContactId);
-
-    newContacts[index] = editedContact;
-
-    setContacts(newContacts);
-    setEditContactId(null);
-  };
-
-  const handleEditClick = (event, contact) => {
-    event.preventDefault();
-    setEditContactId(contact.id);
-
-    const formValues = {
-      dateCreated: contact.dateCreated,
-      creatorName: contact.creatorName,
-      phoneNumber: contact.phoneNumber,
-    };
-
-    setEditFormData(formValues);
-  };
-
-  const handleCancelClick = () => {
-    setEditContactId(null);
-  };
-
-  const handleDeleteClick = (contactId) => {
-    const newContacts = [...contacts];
-
-    const index = contacts.findIndex((contact) => contact.id === contactId);
-
-    newContacts.splice(index, 1);
-
-    setContacts(newContacts);
-  };
+    return `${hours}:${minutes} ${day}/${month}/${year}`;
+  }
 
   return (
     <div className="w-full">
-      <div className="app-container">
-        <form onSubmit={handleEditFormSubmit}>
-          <table>
-            <thead>
-              <tr>
-                <th>Date Created</th>
-                <th>Creator Name </th>
-                <th>Phone Number</th>
-                <th>Actions</th>
+      <div className="mr-4">
+        <table>
+          <thead>
+            <tr>
+              <th className="text-xl font-bold text-center tracking-wide">
+                Article ID
+              </th>
+              <th className="text-xl font-bold text-center tracking-wide">
+                Title
+              </th>
+              <th className="text-xl font-bold text-center tracking-wide">
+                Author ID
+              </th>
+              <th className="text-xl font-bold text-center tracking-wide">
+                Date created
+              </th>
+              <th className="text-xl font-bold text-center tracking-wide">
+                Date Modified
+              </th>
+              <th className="text-xl font-bold text-center tracking-wide">
+                Actions
+              </th>
+            </tr>
+          </thead>
+          <tbody>
+            {itemList.map((item) => (
+              <tr key={item.id}>
+                <td className="text-base font-bold text-center">{item.id}</td>
+                <td className="text-base font-bold text-center">
+                  {item.title}
+                </td>
+                <td className="text-base font-bold text-center">
+                  {item.UserId}
+                </td>
+                <td className="text-base font-bold text-center">
+                  {convertTimestamp(item.createdAt)}
+                </td>
+                <td className="text-base font-bold text-center">
+                  {convertTimestamp(item.updatedAt)}
+                </td>
+                <td className="flex justify-evenly">
+                  {/* Edit button */}
+                  <button
+                    className="text-blue-500"
+                    onClick={() => {
+                      navigate(`/admin/CMS/update_post/${item.id}`);
+                    }}
+                  >
+                    <svg
+                      xmlns="http://www.w3.org/2000/svg"
+                      fill="none"
+                      viewBox="0 0 24 24"
+                      strokeWidth={1.5}
+                      stroke="currentColor"
+                      className="w-6 h-6"
+                    >
+                      <path
+                        strokeLinecap="round"
+                        strokeLinejoin="round"
+                        d="m16.862 4.487 1.687-1.688a1.875 1.875 0 1 1 2.652 2.652L6.832 19.82a4.5 4.5 0 0 1-1.897 1.13l-2.685.8.8-2.685a4.5 4.5 0 0 1 1.13-1.897L16.863 4.487Zm0 0L19.5 7.125"
+                      />
+                    </svg>
+                  </button>
+
+                  {/* Delete Button */}
+                  <button className="text-red-500">
+                    <svg
+                      xmlns="http://www.w3.org/2000/svg"
+                      fill="none"
+                      viewBox="0 0 24 24"
+                      strokeWidth={1.5}
+                      stroke="currentColor"
+                      className="w-6 h-6"
+                    >
+                      <path
+                        strokeLinecap="round"
+                        strokeLinejoin="round"
+                        d="m14.74 9-.346 9m-4.788 0L9.26 9m9.968-3.21c.342.052.682.107 1.022.166m-1.022-.165L18.16 19.673a2.25 2.25 0 0 1-2.244 2.077H8.084a2.25 2.25 0 0 1-2.244-2.077L4.772 5.79m14.456 0a48.108 48.108 0 0 0-3.478-.397m-12 .562c.34-.059.68-.114 1.022-.165m0 0a48.11 48.11 0 0 1 3.478-.397m7.5 0v-.916c0-1.18-.91-2.164-2.09-2.201a51.964 51.964 0 0 0-3.32 0c-1.18.037-2.09 1.022-2.09 2.201v.916m7.5 0a48.667 48.667 0 0 0-7.5 0"
+                      />
+                    </svg>
+                  </button>
+                </td>
               </tr>
-            </thead>
-            <tbody>
-              {contacts.map((contact, key) => (
-                <Fragment key={key}>
-                  {editContactId === contact.id ? (
-                    <EditableRow
-                      editFormData={editFormData}
-                      handleEditFormChange={handleEditFormChange}
-                      handleCancelClick={handleCancelClick}
-                    />
-                  ) : (
-                    <ReadOnlyRow
-                      contact={contact}
-                      handleEditClick={handleEditClick}
-                      handleDeleteClick={handleDeleteClick}
-                    />
-                  )}
-                </Fragment>
-              ))}
-            </tbody>
-          </table>
-        </form>
-        <div>
-          <h2>Add a Contact</h2>
-          <form onSubmit={handleAddFormSubmit}>
-            <input
-              type="text"
-              name="dateCreated"
-              required="required"
-              placeholder="Enter a date"
-              onChange={handleAddFormChange}
-              className="text-box"
-            />
-            <br />
-            <input
-              type="text"
-              name="creatorName"
-              required="required"
-              placeholder="Enter a name"
-              onChange={handleAddFormChange}
-              className="text-box"
-            />
-            <br />
-            <input
-              type="text"
-              name="phoneNumber"
-              required="required"
-              placeholder="Enter a phone number..."
-              onChange={handleAddFormChange}
-              className="text-box"
-            />
-            <br />
-            <button
-              className="btn bg-primary text-white font-bold"
-              type="submit"
-            >
-              Add
-            </button>
-          </form>
-        </div>
+            ))}
+          </tbody>
+        </table>
       </div>
     </div>
   );

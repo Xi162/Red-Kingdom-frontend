@@ -17,6 +17,9 @@ export default function ShopCategory() {
     );
   }
   const [itemList, setItemList] = React.useState([]);
+
+  console.log("render");
+
   React.useEffect(() => {
     axios
       .get(`http://localhost:5500/products/${category}`)

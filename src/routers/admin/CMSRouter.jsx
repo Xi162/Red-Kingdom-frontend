@@ -1,6 +1,7 @@
 import { Routes, Route, NavLink } from "react-router-dom";
 import ContentManagement from "/src/pages/admin/cms/ContentManagement";
 import CreatePost from "/src/pages/admin/cms/CreatePost";
+import UpdatePost from "../../pages/admin/CMS/UpdatePost";
 
 export default function CMSRouter() {
   return (
@@ -71,6 +72,7 @@ export default function CMSRouter() {
       <Routes>
         <Route path="/" element={<ContentManagement />} />
         <Route path="content_management" element={<ContentManagement />} />
+        <Route path="update_post/:articleID" element={<UpdatePost />} />
         <Route path="create_post" element={<CreatePost />} />
       </Routes>
     </div>
