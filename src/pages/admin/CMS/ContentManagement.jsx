@@ -1,11 +1,13 @@
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useContext } from "react";
 import { useNavigate } from "react-router-dom";
+import { LoginContext } from "/src/state/Provider";
 import axios from "axios";
 import "/src/App.css";
 
 const ContentManagement = () => {
   const navigate = useNavigate();
   const [itemList, setItemList] = useState([]);
+  const [loginState, setLoginState] = useContext(LoginContext);
 
   useEffect(() => {
     axios
@@ -20,11 +22,13 @@ const ContentManagement = () => {
   }, []);
 
   function convertTimestamp(timestamp) {
-    const [datePart, timePart] = timestamp.split("T");
-    const [year, month, day] = datePart.split("-");
-    const [hours, minutes] = timePart.slice(0, -5).split(":"); // Truncate milliseconds and Z
+    const time = new Date(timestamp).toLocaleTimeString();
+    const date = new Date(timestamp).toDateString();
 
-    return `${hours}:${minutes} ${day}/${month}/${year}`;
+    // Add more space or formatting as needed
+    const formattedTimestamp = time + ", " + date;
+
+    return formattedTimestamp;
   }
 
   return (
@@ -56,23 +60,23 @@ const ContentManagement = () => {
           <tbody>
             {itemList.map((item) => (
               <tr key={item.id}>
-                <td className="text-base font-bold text-center">{item.id}</td>
-                <td className="text-base font-bold text-center">
-                  {item.title}
+                <td className="text-base font-bold">{item.id}</td>
+                <td className="text-base font-bold">{item.title}</td>
+                <td className="text-base font-bold">{item.UserId}</td>
+                <td className="text-base font-bold w-36">
+                  {new Date(item.createdAt).toLocaleTimeString()}
+                  <br />
+                  {new Date(item.createdAt).toDateString()}
                 </td>
-                <td className="text-base font-bold text-center">
-                  {item.UserId}
+                <td className="text-base font-bold w-36">
+                  {new Date(item.updatedAt).toLocaleTimeString()}
+                  <br />
+                  {new Date(item.updatedAt).toDateString()}
                 </td>
-                <td className="text-base font-bold text-center">
-                  {convertTimestamp(item.createdAt)}
-                </td>
-                <td className="text-base font-bold text-center">
-                  {convertTimestamp(item.updatedAt)}
-                </td>
-                <td className="flex justify-evenly">
+                <td>
                   {/* Edit button */}
                   <button
-                    className="text-blue-500"
+                    className="text-blue-500 m-2"
                     onClick={() => {
                       navigate(`/admin/CMS/update_post/${item.id}`);
                     }}
@@ -94,7 +98,35 @@ const ContentManagement = () => {
                   </button>
 
                   {/* Delete Button */}
-                  <button className="text-red-500">
+                  <button
+                    className="text-red-500"
+                    onClick={() => {
+                      const shouldDelete = window.confirm(
+                        "Are you sure you want to delete?"
+                      );
+
+                      if (shouldDelete) {
+                        const itemDeleteID = item.id;
+                        axios
+                          .delete(`http://localhost:5500/articles/${item.id}`, {
+                            headers: {
+                              Authorization: `Bearer ${loginState.token}`,
+                            },
+                          })
+                          .then((response) => {
+                            // Handle success, e.g., update UI
+                            const updatedList = itemList.filter(
+                              (article) => article.id !== itemDeleteID
+                            );
+                            setItemList(updatedList);
+                          })
+                          .catch((error) => {
+                            // Handle error, e.g., show an error message
+                            console.error("Error deleting article:", error);
+                          });
+                      }
+                    }}
+                  >
                     <svg
                       xmlns="http://www.w3.org/2000/svg"
                       fill="none"

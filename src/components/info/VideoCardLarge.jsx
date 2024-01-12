@@ -11,7 +11,8 @@ export default function VideoCardLarge({
     <div className="md:flex items-center justify-center w-full md:w-1/2 h-60 md:h-90">
       <Link
         className="rounded-lg overflow-hidden shadow-md hover:shadow-xl flex h-full m-4 relative w-full"
-        to={`/article/${id}`}
+        // to={`/article/${id}`}
+        to={`/video/${id}`}
       >
         <div className="w-full transition-transform duration-300 transform hover:scale-105">
           <img src={image} alt="" className="w-full h-full object-cover " />
