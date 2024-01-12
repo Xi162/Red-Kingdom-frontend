@@ -26,7 +26,7 @@ export default function OrderRow({ row, rowIndex }) {
         {row.status === "pending" && (
           <span className="text-orange-500">{row.status}</span>
         )}
-        {row.status === "cacelled" && (
+        {row.status === "cancelled" && (
           <span className="text-red-500">{row.status}</span>
         )}
         {row.status === "delivered" && (

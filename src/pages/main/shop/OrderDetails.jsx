@@ -69,6 +69,15 @@ function OrderDetails() {
         <div className="mt-10 text-[20px] font-black">
           <span>Payment Method: {order.paymentMethod}</span>
         </div>
+        {order.deliverDate ? (
+          <div className="mt-10 text-[20px] font-black">
+            <span>
+              Deliver date: {new Date(order.deliverDate).toDateString()}
+            </span>
+          </div>
+        ) : (
+          ""
+        )}
         <div className="mt-10 text-[20px] font-black">
           <span className="text-[20px]">
             Number of products: {numOfProducts}

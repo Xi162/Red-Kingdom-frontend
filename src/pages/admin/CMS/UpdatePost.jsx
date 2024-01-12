@@ -14,22 +14,17 @@ const UpdatePost = () => {
   const [image, setImage] = useState("");
 
   const [inputs, setInputs] = useState([]);
-  const [article, setArticle] = useState([]);
-
-  console.log("fiwef");
+  const [article, setArticle] = useState({});
 
   useEffect(() => {
     axios
       .get(`http://localhost:5500/articles/${articleID}`)
       .then((res) => {
-        setInputs(res.data.contents);
-        console.log(res.data.contents);
-        // console.log(res.data.contents);
-        console.log(res.data);
         // article = res.data;
-        setArticle(() => res.data);
+        setArticle(res.data);
         setTitle(res.data.title);
         setImage(res.data.image);
+        setInputs(res.data.contents);
         // let contentsArray = res.data.contents;
         // let tmpArr = [];
         // for (let i = 0; i < contentsArray.length; ++i) {
@@ -43,7 +38,6 @@ const UpdatePost = () => {
         // }
         // console.log(tmpArr);
         // console.log(inputs);
-        console.log(article);
       })
       .catch((err) => {
         console.log(err);
@@ -127,7 +121,7 @@ const UpdatePost = () => {
         <div id="mainContent">
           {/* Form.. */}
 
-          {/* <FormInput label={"Title"} deleteFlag={false}>
+          <FormInput label={"Title"} deleteFlag={false}>
             <input
               name={"form-title"}
               value={title}
@@ -151,10 +145,10 @@ const UpdatePost = () => {
               className={"text-box font-bold"}
               maxLength={50}
             ></input>
-          </FormInput> */}
+          </FormInput>
 
           {inputs.map((input, index) => {
-            if (input.type == "Subtitle" || input.type == "Image") {
+            if (input.type == "subtitle" || input.type == "image") {
               let isTitle = false;
               let formClassName = "text-box font-bold";
               return (
@@ -182,7 +176,7 @@ const UpdatePost = () => {
                 //   ></input>
                 // </FormInput>
               );
-            } else if (input.type == "Text") {
+            } else if (input.type == "text") {
               return (
                 <FormInputText
                   key={input.type + index}

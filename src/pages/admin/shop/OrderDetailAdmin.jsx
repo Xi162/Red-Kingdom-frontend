@@ -99,7 +99,7 @@ function OrderDetailAdmin() {
                 setReceiverName(e.target.value);
               }}
               value={receiverName}
-              disabled={editMode}
+              disabled={!editMode}
             />
           </div>
         </div>
@@ -113,7 +113,7 @@ function OrderDetailAdmin() {
                 setAddress(e.target.value);
               }}
               value={address}
-              disabled={editMode}
+              disabled={!editMode}
             />
           </div>
         </div>
@@ -138,7 +138,7 @@ function OrderDetailAdmin() {
                 setPaymentMethod(e.target.value);
               }}
               value={paymentMethod}
-              disabled={editMode}
+              disabled={!editMode}
             >
               <option value="Cash">Cash</option>
               <option value="Banking">Banking</option>
@@ -155,7 +155,7 @@ function OrderDetailAdmin() {
                 setTotalPrice(e.target.value);
               }}
               value={totalPrice}
-              disabled={editMode}
+              disabled={!editMode}
             />
           </div>
         </div>
@@ -169,7 +169,7 @@ function OrderDetailAdmin() {
                 setStatus(e.target.value);
               }}
               value={status}
-              disabled={editMode}
+              disabled={!editMode}
             >
               <option value="pending">Pending</option>
               <option value="delivered">Delivered</option>
@@ -187,7 +187,7 @@ function OrderDetailAdmin() {
                 setDeliverDate(e.target.value);
               }}
               value={deliverDate}
-              disabled={editMode}
+              disabled={!editMode}
             />
           </div>
         </div>
@@ -202,7 +202,7 @@ function OrderDetailAdmin() {
               .put(
                 `http://localhost:5500/orders/${orderID}`,
                 {
-                  status: status,
+                  status: status.toLowerCase(),
                   deliverDate: deliverDate,
                   totalPrice: totalPrice,
                   paymentMethod: paymentMethod,
