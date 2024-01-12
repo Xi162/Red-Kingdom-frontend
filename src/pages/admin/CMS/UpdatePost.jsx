@@ -195,19 +195,19 @@ const CreatePost = () => {
           <div className="flex px-4 space-x-6 hidden" id="blockInfo">
             <button
               className="bg-primary/20 p-2 font-bold rounded-lg"
-              onClick={() => addNewBlock("Subtitle")}
+              onClick={() => addNewBlock("subtitle")}
             >
               Subtitle Block
             </button>
             <button
               className="bg-primary/30 p-2 font-bold rounded-lg"
-              onClick={() => addNewBlock("Text")}
+              onClick={() => addNewBlock("text")}
             >
               Text Block
             </button>
             <button
               className="bg-primary/35 p-2 font-bold rounded-lg"
-              onClick={() => addNewBlock("Image")}
+              onClick={() => addNewBlock("image")}
             >
               Image Block
             </button>
