@@ -5,44 +5,15 @@ import { useParams } from "react-router-dom";
 import { LoginContext } from "../../../state/Provider";
 import axios from "axios";
 
-const UpdatePost = () => {
-  const { articleID } = useParams();
-
+const CreatePost = () => {
   const [loginState, setLoginState] = useContext(LoginContext);
   const [message, setMessage] = useState("No Message Set");
   const [title, setTitle] = useState("");
   const [image, setImage] = useState("");
 
   const [inputs, setInputs] = useState([]);
-  const [article, setArticle] = useState({});
 
-  useEffect(() => {
-    axios
-      .get(`http://localhost:5500/articles/${articleID}`)
-      .then((res) => {
-        // article = res.data;
-        setArticle(res.data);
-        setTitle(res.data.title);
-        setImage(res.data.image);
-        setInputs(res.data.contents);
-        // let contentsArray = res.data.contents;
-        // let tmpArr = [];
-        // for (let i = 0; i < contentsArray.length; ++i) {
-        //   setTitle(res.data.title);
-        //   setImage(res.data.image);
-        //   // addNewBlock(contentsArray[i].type, contentsArray[i].content);
-        //   tmpArr.push(contentsArray[i]);
-        //   setInputs(tmpArr);
-
-        //   console.log(contentsArray[i]);
-        // }
-        // console.log(tmpArr);
-        // console.log(inputs);
-      })
-      .catch((err) => {
-        console.log(err);
-      });
-  }, [articleID]);
+  const { articleID } = useParams();
 
   // UPDATE a block in the array
   const handleInputChange = (index, newValue) => {
@@ -53,11 +24,26 @@ const UpdatePost = () => {
     );
   };
 
+  // AXIOS GET
+  useEffect(() => {
+    axios
+      .get(`http://localhost:5500/articles/${articleID}`)
+      .then((res) => {
+        console.log(res);
+        setInputs(res.data.contents);
+        setTitle(res.data.title);
+        setImage(res.data.image);
+      })
+      .catch((err) => {
+        console.log(err);
+      });
+  }, [articleID]);
+
   const handleSubmit = () => {
     // Call POST API to add new article
     axios
-      .post(
-        `http://localhost:5500/articles/`,
+      .put(
+        `http://localhost:5500/articles/${articleID}`,
         {
           title: title,
           image: image,
@@ -72,7 +58,7 @@ const UpdatePost = () => {
       )
       .then((res) => {
         console.log(res.data);
-        setMessage("Article added");
+        setMessage("Article modified");
       })
       .catch((err) => {
         console.log(err);
@@ -81,7 +67,7 @@ const UpdatePost = () => {
         inputs.forEach((input) => {
           console.log(input.content, input.type);
         });
-        setMessage("Article not added");
+        setMessage("Article not modified");
       });
 
     console.log(message);
@@ -89,10 +75,10 @@ const UpdatePost = () => {
   };
 
   // ADD a block to the array
-  function addNewBlock(labelName, content = "") {
+  function addNewBlock(labelName) {
     const newInput = {
       type: labelName,
-      content: content,
+      content: "",
     };
 
     setInputs([...inputs, newInput]);
@@ -113,9 +99,9 @@ const UpdatePost = () => {
           </h4>
           <button
             onClick={handleSubmit}
-            className="bg-white text-red-600 font-black text-2xl border-[2px] border-gray-950 px-4  rounded"
+            className="bg-white text-red-600 font-black text-2xl border-[2px] border-gray-950 px-4 rounded"
           >
-            Publish
+            Update Article
           </button>
         </div>
         <div id="mainContent">
@@ -151,39 +137,48 @@ const UpdatePost = () => {
             if (input.type == "subtitle" || input.type == "image") {
               let isTitle = false;
               let formClassName = "text-box font-bold";
+              if (input.type == "Title") {
+                formClassName += " text-xl";
+                isTitle = true;
+              }
               return (
-                <FormInputText
+                <FormInput
                   key={input.type + index}
                   label={input.type}
+                  deleteFlag={!isTitle}
                   onDeleteClick={() => removeBlock(index)}
-                  contentInput={input.content}
-                ></FormInputText>
-                // <FormInput
-                //   key={input.type + index}
-                //   label={input.type}
-                //   deleteFlag={!isTitle}
-                //   onDeleteClick={() => removeBlock(index)}
-                // >
-                //   <input
-                //     name={`form-${index}`}
-                //     value={input.content}
-                //     onChange={(e) => {
-                //       handleInputChange(index, e.target.value);
-                //     }}
-                //     type="text"
-                //     className={formClassName}
-                //     maxLength={50}
-                //   ></input>
-                // </FormInput>
+                >
+                  <input
+                    name={`form-${index}`}
+                    value={input.content}
+                    onChange={(e) => {
+                      handleInputChange(index, e.target.value);
+                    }}
+                    type="text"
+                    className={formClassName}
+                    maxLength={50}
+                  ></input>
+                </FormInput>
               );
             } else if (input.type == "text") {
               return (
-                <FormInputText
+                <FormInput
                   key={input.type + index}
                   label={input.type}
+                  // onInputChange={() => input.handler}
                   onDeleteClick={() => removeBlock(index)}
-                  contentInput={input.content}
-                ></FormInputText>
+                >
+                  <textarea
+                    name={`form${index}`}
+                    value={input.content}
+                    onChange={(e) => {
+                      handleInputChange(index, e.target.value);
+                    }}
+                    className="text-box whitespace-pre-line"
+                    cols="50"
+                    rows="4"
+                  ></textarea>
+                </FormInput>
               );
             }
           })}
@@ -228,9 +223,13 @@ function toggleButton() {
   blockInfo.classList.toggle("hidden");
 }
 
-const FormInputTitle = ({ label, deleteFlag = true, onDeleteClick }) => {
-  const [content, setContent] = useState("");
-
+const FormInput = ({
+  label,
+  onInputChange,
+  children,
+  deleteFlag = true,
+  onDeleteClick,
+}) => {
   const handleDeleteClick = () => {
     if (onDeleteClick) {
       onDeleteClick();
@@ -259,53 +258,4 @@ const FormInputTitle = ({ label, deleteFlag = true, onDeleteClick }) => {
   );
 };
 
-const FormInputText = ({
-  label,
-  deleteFlag = true,
-  onDeleteClick,
-  contentInput = "",
-}) => {
-  const [content, setContent] = useState(contentInput);
-  useEffect(() => {
-    setContent(contentInput);
-  }, [contentInput]);
-
-  const handleDeleteClick = () => {
-    if (onDeleteClick) {
-      onDeleteClick();
-    }
-  };
-
-  return (
-    <div className="flex flex-col bg-stone-200 p-2 m-2">
-      {/* Input header */}
-      <div className="flex flex-row justify-between">
-        <div>
-          <h6 className="text-red-600 font-bold text-xl font-title tracking-wider pb-2">
-            {label}
-          </h6>
-        </div>
-        {deleteFlag && ( // Conditionally render delete button based on deleteFlag
-          <button onClick={handleDeleteClick}>
-            <DeleteIcon />
-          </button>
-        )}
-      </div>
-
-      {/* Body with children */}
-      <div className="p-[4px]">
-        <textarea
-          value={content}
-          onChange={(e) => {
-            setContent(e.target.value);
-          }}
-          className="text-box"
-          cols="50"
-          rows="4"
-        ></textarea>
-      </div>
-    </div>
-  );
-};
-
-export default UpdatePost;
+export default CreatePost;

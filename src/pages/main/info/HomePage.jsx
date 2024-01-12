@@ -5,22 +5,34 @@ import ProductCarousel from "../../../components/info/ProductCarousel.jsx";
 import Footer from "../../../components/info/Footer.jsx";
 import GenericContainer from "../../../components/info/GenericContainer.jsx";
 import { useState, useEffect } from "react";
+import axios from "axios";
 
 export default function HomePage() {
   const [articles, setArticles] = useState([]);
   const [relateds, setRelated] = useState([]);
+  const [itemList, setItemList] = useState([]);
 
-  // Fetch data
   useEffect(() => {
-    Promise.all([
-      fetch("/src/mock_data/news.json").then((response) => response.json()),
-      fetch("/src/mock_data/related.json").then((response) => response.json()),
-    ])
-      .then(([dataNews, dataRelated]) => {
-        setArticles(dataNews);
-        setRelated(dataRelated);
+    axios
+      .get(`http://localhost:5500/articles`)
+      .then((res) => {
+        const fetchData = res.data.map((item, index) => {
+          // Assuming itemList has at least 6 items
+          if (index === 1) {
+            // Set the type to "video" for the second item
+            return { ...item, type: "video" };
+          }
+          return { ...item, type: "article" };
+        });
+        console.log(res.data);
+
+        setItemList(fetchData);
+        setArticles(fetchData.slice(0, 2));
+        setRelated(fetchData.slice(2, 6));
       })
-      .catch((error) => console.log("Error fetching data: ", error));
+      .catch((err) => {
+        console.log(err);
+      });
   }, []);
 
   const componentByType = (item, smallFlag) => {
@@ -29,7 +41,7 @@ export default function HomePage() {
         return (
           <NewsCardSmall
             key={item.id}
-            image={`src/assets/images/${item.img}`}
+            image={`src/assets/images/${item.image}`}
             title={item.title}
             description={item.description}
             id={item.id}
@@ -39,7 +51,7 @@ export default function HomePage() {
       return (
         <NewsCardLarge
           key={item.id}
-          image={`src/assets/images/${item.img}`}
+          image={`src/assets/images/${item.image}`}
           title={item.title}
           description={item.description}
           id={item.id}
@@ -51,7 +63,7 @@ export default function HomePage() {
       return (
         <VideoCardLarge
           key={item.id}
-          image={`src/assets/images/${item.img}`}
+          image={`src/assets/images/${item.image}`}
           title={item.title}
           id={item.id}
         />
@@ -83,29 +95,6 @@ export default function HomePage() {
       <div>
         <ProductCarousel image={"src/assets/images/carousel-bg.jpg"} />
       </div>
-
-      {/* <GenericContainer
-        classes={"md:flex flex-wrap m-12 my-8"}
-        titleText={"Fan's stories"}
-        viewMoreText={"Visit our fan's homepage"}
-        childComponents={[
-          () => (
-            <NewsCardLarge
-              image="src/assets/images/zidane-1868.png"
-              title="the dawg"
-              description="Lorem ipsum dolor sit amet, consectetur adipisicing elit. 
-          Laboriosam esse, vero eligendi culpa tenetur quisquam. Vitae nesciunt cumque ex optio?"
-            />
-          ),
-          () => (
-            <VideoCardLarge
-              image="src/assets/images/zidane-1868.png"
-              title="the dawg"
-            />
-          ),
-        ]}
-      /> */}
-
       <Footer />
     </>
   );

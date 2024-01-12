@@ -169,7 +169,7 @@ const CreatePost = () => {
                     onChange={(e) => {
                       handleInputChange(index, e.target.value);
                     }}
-                    className="text-box"
+                    className="text-box whitespace-pre-line"
                     cols="50"
                     rows="4"
                   ></textarea>
